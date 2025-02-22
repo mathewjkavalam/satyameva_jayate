@@ -1,4 +1,3 @@
-# TODO: ask if each input should have separate submit buttons
 '''salve, regina, mater misericordiae...
 Take care of data entry
 example:
@@ -37,7 +36,6 @@ def compute_list_of_time_to_populate_dropdown_ui():
 ui.write("Upload Animal Sighting")
 animal_classification = "" 
 # TODO: connect with DB to save the input for later
-# TODO: ask if multiple file upload is priority
 # store the uploaded image locally, so that it can be previewed
 animal_image = ui.file_uploader(
     label="Choose the image of the animal", accept_multiple_files=False)
@@ -48,12 +46,16 @@ else:
 region = ui.text_input(
    label= "Region", value= "Donmouth Local Natural Reserve"
 )
+# TODO:get the API for location set-up
 location = get_latitude_logitude_from_location_name(location_name= region)
 latitude, longitude = location["lat"], location["lng"]
 latitude, longitude = float(latitude), float(longitude)
-ui.write("Latitude:",str(latitude),",","Longitude:",str(longitude))
 # caution: in production use id generator with better randomness!
-capture_globally_unique_id = id_generator(1,10000000000000000000)
+# Ensure the capture ID persists across inputs
+if "capture_globally_unique_id" not in ui.session_state:
+    ui.session_state.capture_globally_unique_id = id_generator(1, 10000000000000000000)
+
+capture_globally_unique_id = ui.session_state.capture_globally_unique_id
 ui.divider()
 from datetime import datetime, timedelta
 
@@ -64,3 +66,10 @@ ui.date_input(label= "Date of animal sighting", value= "today",max_value= today_
 valid_time_list = compute_list_of_time_to_populate_dropdown_ui()
 ui.selectbox("Time of animal sighting", valid_time_list)
 ui.write("Capture ID:",capture_globally_unique_id)
+# Submit Button to save the sighting
+submit_button = ui.button("Submit Sighting")
+
+if submit_button:
+    # TODO: Connect to a database to save the data
+    ui.write("Sighting submitted successfully!")
+    # You can insert your DB saving logic here
