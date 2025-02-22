@@ -28,4 +28,7 @@ latitude, logitude = float(latitude), float(logitude)
 ui.write("Latitude:",str(latitude),",","Logitude:",str(logitude))
 # caution: in production use id generator with better randomness!
 capture_globally_unique_id = id_generator(1,10000000000000000000)
+ui.divider()
+ui.date_input(label= "Date of animal sighting", value= "default_value_today")
+ui.time_input(label= "Time of animal sighting", value= "now")
 ui.write("Capture ID:",capture_globally_unique_id)
