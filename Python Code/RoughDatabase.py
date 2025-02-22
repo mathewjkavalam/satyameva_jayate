@@ -70,9 +70,9 @@ if __name__ == "__main__":
         image_path = input("Enter image file path: ")
         region = input("Enter region: ")
         date = input("Enter date (YYYY-MM-DD): ")
-        time = float(input("Enter time (in decimal format): "))
+        time = float(input("Enter time (Use . just after the hour to specify mins): "))
         
-        db.insert("species_data", {
+        db.insert("species_data",{
             "species": species,
             "image_path": image_path,
             "region": region,
