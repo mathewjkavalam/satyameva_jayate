@@ -44,7 +44,7 @@ if animal_image is None:
 else:
   ui.image(image= animal_image)
 region = ui.text_input(
-   label= "Region", value= "Donmouth Local Natural Reserve"
+   label= "Region", value= "", help ="example: Donmouth Local Natural Reserve"
 )
 # TODO:get the API for location set-up
 location = get_latitude_logitude_from_location_name(location_name= region)
