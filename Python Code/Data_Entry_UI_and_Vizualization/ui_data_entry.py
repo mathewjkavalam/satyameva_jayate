@@ -6,6 +6,7 @@ example:
   image_url:/images/Bengal-tiger-220220251550.jpg
   location_latitude_logitude:41.85, -87.65
 '''
+from random import randint as id_generator
 import streamlit as ui
 
 # TODO: connect with DB to save the input for later
@@ -25,3 +26,6 @@ location = ui.text_input(
 latitude, logitude = location.replace(' ','').split(',')
 latitude, logitude = float(latitude), float(logitude)
 ui.write("Latitude:",str(latitude),",","Logitude:",str(logitude))
+# caution: in production use id generator with better randomness!
+capture_globally_unique_id = id_generator(1,10000000000000000000)
+ui.write("Capture ID:",capture_globally_unique_id)
