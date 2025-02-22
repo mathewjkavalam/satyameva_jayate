@@ -18,4 +18,4 @@ deactivate_venv:
 run:
     .\make.ps1 _init
     pip freeze > requirements.txt
-    python ui_data_entry.py
+    streamlit run .\ui_data_entry.py
