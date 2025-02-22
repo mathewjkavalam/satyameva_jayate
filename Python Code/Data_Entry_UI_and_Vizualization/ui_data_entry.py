@@ -43,13 +43,21 @@ if animal_image is None:
     pass
 else:
   ui.image(image= animal_image)
-region = ui.text_input(
-   label= "Region", value= "", help ="example: Donmouth Local Natural Reserve"
-)
 # TODO:get the API for location set-up
-location = get_latitude_logitude_from_location_name(location_name= region)
-latitude, longitude = location["lat"], location["lng"]
-latitude, longitude = float(latitude), float(longitude)
+region_input_toggle = ui.checkbox("Enter latitude/longitude instead of region name")
+if region_input_toggle:
+    # Latitude and Longitude inputs
+    latitude = ui.number_input("Latitude", value=41.85)
+    longitude = ui.number_input("Longitude", value=-87.65)
+else:
+    # Region input (location name)
+    region = ui.text_input(
+        label="Region", value="", help="example: Donmouth Local Natural Reserve"
+    )
+
+    # Get latitude and longitude from the region name (replace with actual API call in production)
+    location = get_latitude_logitude_from_location_name(location_name=region)
+    latitude, longitude = location["lat"], location["lng"]
 # caution: in production use id generator with better randomness!
 # Ensure the capture ID persists across inputs
 if "capture_globally_unique_id" not in ui.session_state:
