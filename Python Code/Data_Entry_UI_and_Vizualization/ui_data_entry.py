@@ -9,4 +9,4 @@ import streamlit as ui
 
 # TODO: connect with DB to save the input for later
 animal_classification = ui.text_input(
-    label="Panthera tigris tigris")
+    label="Animal classification", value="Panthera tigris tigris")
