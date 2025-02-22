@@ -20,3 +20,8 @@ if animal_image is None:
     pass
 else:
   ui.image(image= animal_image)
+location = ui.text_input(
+   label="Latitude, Logitude", value="41.85, -87.65")
+latitude, logitude = location.replace(' ','').split(',')
+latitude, logitude = float(latitude), float(logitude)
+ui.write("Latitude:",str(latitude),",","Logitude:",str(logitude))
