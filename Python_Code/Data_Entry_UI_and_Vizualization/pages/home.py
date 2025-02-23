@@ -1,3 +1,3 @@
 import streamlit as ui
 
-ui.write("Animal Map")
+ui.write("Home Page")
