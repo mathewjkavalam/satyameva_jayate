@@ -15,9 +15,9 @@ cities = [
 
 # Dictionary to map cities to their image URLs or file paths
 city_images = {
-    "Amsterdam": "path_or_url_to_amsterdam_image",
+    "Amsterdam": "pages/amsterdam.jpg",
     "Athens": "path_or_url_to_athens_image",
-    "Tokyo": "path_or_url_to_tokyo_image",
+    "Tokyo": "pages/tokyo.jpg",
     # Add paths or URLs for all cities
 }
 
@@ -98,12 +98,13 @@ with col1:
 # Display the selected city's image and information
 with col2:
     if selected_city:
+        st.image(
+            city_images[selected_city])
         st.markdown(f"""
             <div class="info-box">
-                <img src="{city_images[selected_city]}" alt="{selected_city}">
                 <p>{city_info[selected_city]}</p>
             </div>
-            """, unsafe_allow_html=True) 
+            """, unsafe_allow_html=True)
 #-----DONOT DELETE,PLEASE , MATHEW, Makes Background green---#
 st.markdown(
                 """

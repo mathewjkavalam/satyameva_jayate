@@ -30,8 +30,8 @@ animals = [
 
 # Dictionary to map animals to their image URLs or file paths
 animal_images = {
-    "Tiger": "Python_Code/pages/22022025_1726.jpg",
-    "Cat": "Python_Code/pages/1241251444.jpg",
+    "Tiger": "pages/22022025_1726.jpg",
+    "Cat": "pages/1241251444.jpg",
     # Add paths or URLs for all animals
 }
 
@@ -119,9 +119,10 @@ with col1:
 with col2:
     if selected_animal:
         animal_info = fetch_animal_info(selected_animal)
+        st.image(
+            animal_images[selected_animal])
         st.markdown(f"""
             <div class="info-box">
-                <img src="{animal_images[selected_animal]}" alt="{selected_animal}">
                 <p>{animal_info}</p>
             </div>
             """, unsafe_allow_html=True)
