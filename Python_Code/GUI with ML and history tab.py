@@ -1,4 +1,5 @@
 import streamlit as st
+import pydeck as pdk
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
@@ -55,6 +56,33 @@ def save_to_db(timestamp, latitude, longitude, predicted_class):
     conn.commit()
     conn.close()
 
+def plot_3d_location(latitude, longitude):
+    # Visualize the latitude and longitude on a 3D map using pydeck
+    if latitude and longitude:
+        # Create a 3D map centered at the uploaded image's location
+        view_state = pdk.ViewState(latitude=latitude, longitude=longitude, zoom=11, pitch=50)
+        
+        # Create the layer with a more neutral point color (e.g., blue)
+        layer = pdk.Layer(
+            'ScatterplotLayer',
+            data=[{'lat': latitude, 'lon': longitude}],
+            get_position='[lon, lat]',
+            get_radius=10000,
+            get_color=[0, 123, 255, 160],  # A soft blue color (rgba)
+            pickable=True
+        )
+        
+        # Create the deck with default styling
+        r = pdk.Deck(
+            layers=[layer],
+            initial_view_state=view_state,
+            tooltip={"text": "Uploaded Image Location"},
+            map_style='mapbox://styles/mapbox/streets-v11'  # Using a neutral Mapbox style
+        )
+        
+        # Display the map in the app
+        st.pydeck_chart(r)
+
 st.title("EfficientNetB0 Image Classifier :camera:")
 tabs = st.tabs(["Upload Image", "History"])
 
@@ -70,7 +98,7 @@ with tabs[0]:
         latitude, longitude = get_location()
         save_to_db(timestamp, latitude, longitude, labels[0])
         
-        # Visualization
+        # Visualization of Top 5 Predictions
         prob_fig = plt.figure(figsize=(12, 2.5))
         ax = prob_fig.add_subplot(111)
         plt.barh(y=labels[::-1], width=scores[::-1], color=["dodgerblue"] * 4 + ["tomato"])
@@ -89,8 +117,10 @@ with tabs[0]:
 
         with col2:
             st.write("Interpretation visualization not available for TensorFlow EfficientNetB0 model.")
+        
+        # Visualize the location of the uploaded image on a 3D map
+        plot_3d_location(latitude, longitude)
 
-# In the "History" tab
 with tabs[1]:
     st.subheader("Classification History")
     conn = sqlite3.connect("image_classification.db")
@@ -100,7 +130,6 @@ with tabs[1]:
     conn.close()
 
     if data:
-        # Convert to DataFrame for better handling
         df = pd.DataFrame(data, columns=["Timestamp", "Latitude", "Longitude", "Predicted Class"])
         st.table(df)  # Display the data in a table with custom column names
     else:
