@@ -8,6 +8,10 @@ example:
 from random import randint as id_generator
 import streamlit as ui
 
+region = None
+# TODO: implement using an API call
+def is_valid_region(region: str):
+    return True 
 def  get_latitude_logitude_from_location_name(location_name :str):
     return {"lat":41.85, "lng":-87.65}
 def compute_list_of_time_to_populate_dropdown_ui():
@@ -47,8 +51,8 @@ else:
 region_input_toggle = ui.checkbox("Enter latitude/longitude instead of region name")
 if region_input_toggle:
     # Latitude and Longitude inputs
-    latitude = ui.number_input("Latitude", value=41.85)
-    longitude = ui.number_input("Longitude", value=-87.65)
+    latitude = ui.number_input("Latitude", value=41.85, min_value= -90.0, max_value= 90.0)
+    longitude = ui.number_input("Longitude", value=-87.65, min_value= -180.0, max_value= 180.0)
 else:
     # Region input (location name)
     region = ui.text_input(
@@ -77,7 +81,9 @@ ui.write("Capture ID:",capture_globally_unique_id)
 # Submit Button to save the sighting
 submit_button = ui.button("Submit Sighting")
 
-if submit_button:
+if submit_button and is_valid_region(region):
     # TODO: Connect to a database to save the data
     ui.write("Sighting submitted successfully!")
     # You can insert your DB saving logic here
+if submit_button and not is_valid_region(region):
+    ui.write("Input a valid region.")
