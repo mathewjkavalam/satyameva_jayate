@@ -3,7 +3,7 @@ from typing import List, Tuple, Any, Optional
 
 class Database:
     
-    def __init__(self, db_name: str = "WildlifeDatabase.db"):
+    def __init__(self, db_name: str = "animal_database.db"):
         self.db_name = db_name
 
     def __enter__(self):
@@ -52,8 +52,6 @@ class Database:
         query = f"SELECT * FROM {table_name} WHERE {condition} LIMIT 1"
         self.cursor.execute(query, values)
         return self.cursor.fetchone()
-
-# Example Usage
 
 if __name__ == "__main__":
     with Database() as db:
