@@ -106,4 +106,4 @@ with col2:
                 <img src="{city_images[selected_city]}" alt="{selected_city}">
                 <p>{city_info}</p>
             </div>
-            """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True) 
