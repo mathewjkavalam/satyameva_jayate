@@ -99,3 +99,19 @@ with col2:
                 <p>{animal_info}</p>
             </div>
             """, unsafe_allow_html=True)
+
+#-----DONOT DELETE,PLEASE , MATHEW, Makes Background green---#
+st.markdown(
+                """
+                <style>
+                .stApp {
+                                background-color: #002900;
+                }
+                .input-container {
+                                background-color: #05FFA6;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True
+)
+#--------------------------------------------------#

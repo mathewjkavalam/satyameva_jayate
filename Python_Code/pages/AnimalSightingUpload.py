@@ -10,6 +10,7 @@ import streamlit as ui
 
 # ui.sidebar.page_link("pages/animal_map.py", label="Animal List", icon="🐾")
 # Add custom CSS to change the background color
+#-----DONOT DELETE,PLEASE , MATHEW, Makes Background green---#
 ui.markdown(
                 """
                 <style>
@@ -23,7 +24,7 @@ ui.markdown(
                 """,
                 unsafe_allow_html=True
 )
-
+#--------------------------------------------------#
 region = None
 # TODO: implement using an API call
 def is_valid_region(region: str):

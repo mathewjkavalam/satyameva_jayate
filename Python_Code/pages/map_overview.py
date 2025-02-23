@@ -57,3 +57,18 @@ st.title("Map Overview Of Wildlife Reports")
 
 # Display the Cesium 3D Earth model with your token
 st_cesium(height=600, token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxOTFhZTVmZi1hNzVmLTQ4MWYtYWZkMC04ZWJmMmViZmM5MTgiLCJpZCI6Mjc4MzMzLCJpYXQiOjE3NDAyODQxNDZ9.YkN71tVYUgvc8vG88JrCIrcp6Vhjvk38ga_v7MvSp_k")
+#-----DONOT DELETE,PLEASE , MATHEW, Makes Background green---#
+st.markdown(
+                """
+                <style>
+                .stApp {
+                                background-color: #002900;
+                }
+                .input-container {
+                                background-color: #05FFA6;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True
+)
+#--------------------------------------------------#
