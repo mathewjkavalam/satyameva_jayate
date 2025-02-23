@@ -18,7 +18,7 @@ deactivate_venv:
 run:
     .\make.ps1 _init
     pip freeze > requirements.txt
-    streamlit run .\AnimalSightingUpload.py
+    streamlit run .\home.py
 run_search:
     .\make.ps1 _init
     pip freeze > requirements.txt
