@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife Observation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[readonly] {
+            background-color: #e9e9e9;
+            cursor: not-allowed;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+        }
+        .insight-section img {
+            max-width: 100%;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Wildlife Observation</h1>
+
+    <form id="observationForm" enctype="multipart/form-data">
+        <label for="species">Species (Auto-detected):</label>
+        <input type="text" id="species" name="species" readonly>
+
+        <label for="confidence">Confidence (Auto-detected):</label>
+        <input type="text" id="confidence" name="confidence" readonly>
+
+        <label for="latitude">Latitude (Auto-detected):</label>
+        <input type="text" id="latitude" name="latitude" readonly>
+
+        <label for="longitude">Longitude (Auto-detected):</label>
+        <input type="text" id="longitude" name="longitude" readonly>
+
+        <label for="region">Region (Auto-detected):</label>
+        <input type="text" id="region" name="region" readonly>
+
+        <label for="date">Date (Auto-detected):</label>
+        <input type="text" id="date" name="date" readonly>
+
+        <label for="time">Time (Auto-detected):</label>
+        <input type="text" id="time" name="time" readonly>
+
+        <label for="image">Upload Image:</label>
+        <input type="file" id="image" name="file" accept="image/*" required>
+
+        <button type="submit">Submit Observation</button>
+    </form>
+
+    <h2>📊 Species Insights</h2>
+    <div class="insight-section">
+        <h3>📈 Species Trends</h3>
+        <img id="trendChart" src="" alt="Trend Analysis">
+        
+        <h3>🔥 Sightings Heatmap</h3>
+        <img id="heatmapChart" src="" alt="Heatmap">
+        
+        <h3>📍 Migration Clustering</h3>
+        <img id="clusterChart" src="" alt="Clustering">
+    </div>
+
+    <script>
+        // ✅ Auto-Detect Date & Time
+        function getCurrentDateTime() {
+            const now = new Date();
+            document.getElementById("date").value = now.toISOString().split('T')[0];
+            document.getElementById("time").value = now.toLocaleTimeString();
+        }
+
+        // ✅ Auto-Detect Location (Latitude & Longitude)
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        document.getElementById("latitude").value = position.coords.latitude;
+                        document.getElementById("longitude").value = position.coords.longitude;
+                        getRegionFromCoordinates(position.coords.latitude, position.coords.longitude);
+                    },
+                    (error) => {
+                        console.error("Location error:", error);
+                        document.getElementById("latitude").value = "0.0";
+                        document.getElementById("longitude").value = "0.0";
+                        document.getElementById("region").value = "Location Unavailable";
+                    }
+                );
+            } else {
+                document.getElementById("latitude").value = "0.0";
+                document.getElementById("longitude").value = "0.0";
+                document.getElementById("region").value = "Location Unavailable";
+            }
+        }
+
+        // ✅ Get Region Name from Coordinates
+        function getRegionFromCoordinates(latitude, longitude) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("region").value = data.address?.state || "Unknown";
+                })
+                .catch(error => {
+                    console.error("Error fetching region:", error);
+                    document.getElementById("region").value = "Unknown";
+                });
+        }
+
+        // ✅ Handle Image Upload & Auto-Fetch Insights
+        document.getElementById("observationForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+            formData.append("file", document.getElementById("image").files[0]);
+
+            try {
+                const response = await fetch("/predi", { method: "POST", body: formData });
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("species").value = result.species;
+                    document.getElementById("confidence").value = result.confidence;
+                    fetchSpeciesInsights(result.species);
+                } else {
+                    alert("❌ Error predicting species.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("❌ Failed to upload image.");
+            }
+        });
+
+        // ✅ Fetch Insights Automatically
+        async function fetchSpeciesInsights(species) {
+            if (!species) return;
+
+            try {
+                const response = await fetch(`/species_insights?species=${species}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById("trendChart").src = `data:image/png;base64,${data.trend_chart}`;
+                document.getElementById("heatmapChart").src = `data:image/png;base64,${data.heatmap_chart}`;
+                document.getElementById("clusterChart").src = `data:image/png;base64,${data.cluster_chart}`;
+
+                document.getElementById("trendChart").style.display = "block";
+                document.getElementById("heatmapChart").style.display = "block";
+                document.getElementById("clusterChart").style.display = "block";
+            } catch (error) {
+                console.error("Error fetching species insights:", error);
+            }
+        }
+
+        // ✅ Initialize Page
+        window.onload = () => {
+            getCurrentDateTime();
+            getUserLocation();
+        };
+    </script>
+
+</body>
+</html>

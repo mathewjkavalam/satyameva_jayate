@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        canvas, #map {
+            max-width: 700px;
+            margin: 20px auto;
+        }
+        #map { height: 400px; }
+    </style>
+</head>
+<body>
+    <h1>📊 Wildlife Observation Insights</h1>
+
+    <h3>Predicted Species: <span id="speciesName">None</span></h3>
+    <h3>Confidence: <span id="confidenceLevel">0%</span></h3>
+
+    <h3>Total Observations: <span id="totalObservations">0</span></h3>
+
+    <h3>Observation Trend</h3>
+    <canvas id="trendChart"></canvas>
+
+    <h3>Observation Heatmap</h3>
+    <div id="map"></div>
+
+    <script>
+        async function fetchInsights() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const species = urlParams.get("species");
+
+            if (!species) {
+                alert("No species selected.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/insights?species=${species}`);
+                const data = await response.json();
+                console.log("Insights Data:", data);
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById("speciesName").innerText = data.species;
+                document.getElementById("confidenceLevel").innerText = data.confidence;
+                document.getElementById("totalObservations").innerText = data.total_observations;
+
+                createTrendChart(data.observation_trends);
+                createHeatmap(data.locations);
+            } catch (error) {
+                console.error("Error fetching insights:", error);
+            }
+        }
+
+        function createTrendChart(trendData) {
+            const ctx = document.getElementById("trendChart").getContext("2d");
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: trendData.map(d => d.date),
+                    datasets: [{
+                        label: "Observations Over Time",
+                        data: trendData.map(d => d.count),
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function createHeatmap(locations) {
+            const map = L.map('map').setView([0, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            locations.forEach(loc => {
+                L.circleMarker([loc.latitude, loc.longitude], {
+                    radius: 5,
+                    color: "red",
+                    fillOpacity: 0.5
+                }).addTo(map);
+            });
+        }
+
+        window.onload = fetchInsights;
+    </script>
+</body>
+</html>
