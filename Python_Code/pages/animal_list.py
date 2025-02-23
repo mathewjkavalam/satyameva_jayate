@@ -1,11 +1,8 @@
-import streamlit as ui
 import streamlit as st
 from collections import defaultdict
 import sqlite3
 
 st.set_page_config(page_title="Animal List from A-Z", layout="wide")
-
-ui.write("Animal List")
 
 # List of land animals from A-Z
 animals = [
