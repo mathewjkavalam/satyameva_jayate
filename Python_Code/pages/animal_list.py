@@ -1,14 +1,18 @@
 import streamlit as st
 from collections import defaultdict
 import sqlite3
+import os
 
 st.set_page_config(page_title="Animal List from A-Z", layout="wide")
 
+# Define the database path
+db_path = os.path.join(os.path.dirname(__file__), '..', 'WildlifeNew.db')
+
 # Function to fetch animal list from the new database
 def fetch_animals_from_db():
-    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/WildlifeNew.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT name FROM animalslist")
+    cursor.execute("SELECT name FROM species")
     animals_data = cursor.fetchall()
     conn.close()
     return animals_data
@@ -19,7 +23,7 @@ animals = [animal[0] for animal in animals_data]
 
 # Function to fetch animal information from the new database
 def fetch_animal_info(animal_name):
-    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/WildlifeNew.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT info FROM animal_info WHERE name=?", (animal_name,))
     result = cursor.fetchone()
