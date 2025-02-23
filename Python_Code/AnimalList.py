@@ -1,5 +1,6 @@
 import streamlit as st
 from collections import defaultdict
+import sqlite3
 
 # List of land animals from A-Z
 animals = [
@@ -25,7 +26,24 @@ animals = [
     "Termite", "Tiger", "Toad", "Trout", "Turkey", "Turtle", "Viper", "Vulture", "Wallaby", "Walrus", "Wasp",
     "Weasel", "Whale", "Wildcat", "Wolf", "Wolverine", "Wombat", "Woodcock", "Woodpecker", "Worm", "Wren",
     "Yak", "Zebra"
-]
+] 
+
+# Dictionary to map animals to their image URLs or file paths
+animal_images = {
+    "Aardvark": "path_or_url_to_aardvark_image",
+    "Alpaca": "path_or_url_to_alpaca_image",
+    "Tiger": "22022025_1726.jpg",
+    # Add paths or URLs for all animals
+}
+
+# Function to fetch animal information from the database
+def fetch_animal_info(animal_name):
+    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/animal_database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT info FROM animal_info WHERE name=?", (animal_name,))
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else "Information not available."
 
 # Categorize animals by their starting alphabet
 animal_dict = defaultdict(list)
@@ -59,16 +77,47 @@ st.markdown("""
         font-size: 20px;
         font-weight: normal;
     }
+    .info-box {
+        border: 3px solid #ddd;
+        border-radius: 25px;
+        padding: 10px;
+        margin-top: 10px;
+        text-align: center;
+    }
+    .info-box img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 15px;
+        margin-bottom: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
+# Create columns for the list and the image
+col1, col2 = st.columns([2, 1])
+
 # Display the search results or the categorized list of animals
-if search_query:
-    for animal in sorted(animals):
-        if search_query.lower() in animal.lower():
-            st.write(animal)
-else:
-    for letter in sorted(animal_dict.keys()):
-        with st.expander(letter):
-            for animal in sorted(animal_dict[letter]):
-                st.write(animal)
+selected_animal = None
+with col1:
+    if search_query:
+        for animal in sorted(animals):
+            if search_query.lower() in animal.lower():
+                if st.button(animal):
+                    selected_animal = animal
+    else:
+        for letter in sorted(animal_dict.keys()):
+            with st.expander(letter):
+                for animal in sorted(animal_dict[letter]):
+                    if st.button(animal):
+                        selected_animal = animal
+
+# Display the selected animal's image and information
+with col2:
+    if selected_animal:
+        animal_info = fetch_animal_info(selected_animal)
+        st.markdown(f"""
+            <div class="info-box">
+                <img src="{animal_images[selected_animal]}" alt="{selected_animal}">
+                <p>{animal_info}</p>
+            </div>
+            """, unsafe_allow_html=True)
