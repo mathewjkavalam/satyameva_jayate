@@ -8,8 +8,7 @@ example:
 from random import randint as id_generator
 import streamlit as ui
 
-# TODO: Add other pages into the pages folder
-ui.sidebar.page_link("pages/animal_map.py", label="Animal List", icon="🐾")
+# ui.sidebar.page_link("pages/animal_map.py", label="Animal List", icon="🐾")
 # Add custom CSS to change the background color
 ui.markdown(
                 """
