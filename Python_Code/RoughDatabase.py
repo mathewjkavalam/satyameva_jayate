@@ -53,8 +53,6 @@ class Database:
         self.cursor.execute(query, values)
         return self.cursor.fetchone()
 
-# Example Usage
-
 if __name__ == "__main__":
     with Database() as db:
         db.create_table("species_data", [
