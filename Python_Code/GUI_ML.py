@@ -60,7 +60,7 @@ def plot_3d_location(latitude, longitude):
     # Visualize the latitude and longitude on a 3D map using pydeck
     if latitude and longitude:
         # Create a 3D map centered at the uploaded image's location
-        view_state = pdk.ViewState(latitude=latitude, longitude=longitude, zoom=11, pitch=50)
+        view_state = pdk.ViewState(latitude=latitude, longitude=longitude, zoom=11, pitch=60)  # Set a higher pitch for 3D effect
         
         # Create the layer with a more neutral point color (e.g., blue)
         layer = pdk.Layer(
@@ -72,19 +72,59 @@ def plot_3d_location(latitude, longitude):
             pickable=True
         )
         
-        # Create the deck with default styling
+        # Create the deck with a 3D Mapbox style (outdoors-v11 for 3D terrain)
         r = pdk.Deck(
             layers=[layer],
             initial_view_state=view_state,
             tooltip={"text": "Uploaded Image Location"},
-            map_style='mapbox://styles/mapbox/streets-v11'  # Using a neutral Mapbox style
+            map_style='mapbox://styles/mapbox/outdoors-v11',  # Mapbox outdoors style with 3D terrain
+            api_keys={'mapbox': 'YOUR_MAPBOX_ACCESS_TOKEN'}  # Don't forget to add your Mapbox access token!
         )
         
         # Display the map in the app
         st.pydeck_chart(r)
 
+def plot_class_frequency():
+    # Query the database for class frequencies
+    conn = sqlite3.connect("image_classification.db")
+    c = conn.cursor()
+    c.execute("SELECT predicted_class FROM history")
+    data = c.fetchall()
+    conn.close()
+
+    if data:
+        # Convert data to a pandas DataFrame for easy manipulation
+        df = pd.DataFrame(data, columns=["Predicted Class"])
+
+        # Count the frequency of each class
+        class_counts = df['Predicted Class'].value_counts()
+
+        # Plot the bar chart for class frequency
+        fig, ax = plt.subplots(figsize=(10, 6))
+        class_counts.plot(kind='bar', color='dodgerblue', ax=ax)
+        ax.set_title("Frequency of Predicted Classes", fontsize=16)
+        ax.set_xlabel("Class Name", fontsize=12)
+        ax.set_ylabel("Frequency", fontsize=12)
+        st.pyplot(fig)
+
+# Dictionary for predicting habitat and region based on object class
+habitat_region_dict = {
+    "cat": {"Habitat": "Domestic", "Region": "Worldwide"},
+    "dog": {"Habitat": "Domestic", "Region": "Worldwide"},
+    "tiger": {"Habitat": "Wild", "Region": "Asia"},
+    "lion": {"Habitat": "Wild", "Region": "Africa"},
+    "elephant": {"Habitat": "Wild", "Region": "Africa, Asia"},
+    # Add more class-to-habitat-region mappings as needed
+}
+
+def get_habitat_and_region(predicted_class):
+    if predicted_class in habitat_region_dict:
+        return habitat_region_dict[predicted_class]
+    else:
+        return {"Habitat": "Unknown", "Region": "Unknown"}
+
 st.title("EfficientNetB0 Image Classifier :camera:")
-tabs = st.tabs(["Upload Image", "History"])
+tabs = st.tabs(["Upload Image", "History", "Habitat & Region"])
 
 with tabs[0]:
     upload = st.file_uploader("Upload Image:", type=["png", "jpg", "jpeg"])
@@ -121,6 +161,9 @@ with tabs[0]:
         # Visualize the location of the uploaded image on a 3D map
         plot_3d_location(latitude, longitude)
 
+        # Show the frequency bar chart for predicted classes
+        plot_class_frequency()
+
 with tabs[1]:
     st.subheader("Classification History")
     conn = sqlite3.connect("image_classification.db")
@@ -134,6 +177,14 @@ with tabs[1]:
         st.table(df)  # Display the data in a table with custom column names
     else:
         st.write("No history available.")
+
+with tabs[2]:
+    st.subheader("Predicted Habitat and Region")
+    if upload:
+        habitat_region = get_habitat_and_region(labels[0])  # Get habitat and region for the predicted class
+        st.write(f"**Predicted Class:** {labels[0]}")
+        st.write(f"**Habitat:** {habitat_region['Habitat']}")
+        st.write(f"**Region:** {habitat_region['Region']}")
 
 # Initialize the database
 init_db()
