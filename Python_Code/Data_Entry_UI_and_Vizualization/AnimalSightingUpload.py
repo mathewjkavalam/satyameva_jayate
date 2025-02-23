@@ -101,5 +101,9 @@ if submit_button and is_valid_region(region):
                 # TODO: Connect to a database to save the data
                 ui.write("Sighting submitted successfully!")
                 # You can insert your DB saving logic here
+
+                # Strictly after DB submission, generate a new capture ID
+                ui.session_state.capture_globally_unique_id = id_generator(1, 10000000000000000000)
+                capture_globally_unique_id = ui.session_state.capture_globally_unique_id
 if submit_button and not is_valid_region(region):
                 ui.write("Input a valid region.")
