@@ -57,3 +57,38 @@ st.title("Map Overview Of Wildlife Reports")
 
 # Display the Cesium 3D Earth model with your token
 st_cesium(height=600, token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxOTFhZTVmZi1hNzVmLTQ4MWYtYWZkMC04ZWJmMmViZmM5MTgiLCJpZCI6Mjc4MzMzLCJpYXQiOjE3NDAyODQxNDZ9.YkN71tVYUgvc8vG88JrCIrcp6Vhjvk38ga_v7MvSp_k")
+# Add a text input for the city
+city = st.text_input("Enter city name:")
+
+# Add a selectbox for the animal
+animal = st.selectbox("Select animal:", ["Tiger", "Elephant", "Leopard", "Bear", "Deer"])
+
+# Display the selected city and animal
+if city and animal:
+    st.write(f"City: {city}")
+    st.write(f"Animal: {animal}")
+
+    # Add JavaScript to display the city and animal on the map
+    cesium_js = f"""
+    <script>
+        var city = '{city}';
+        var animal = '{animal}';
+        viewer.entities.add({{
+            name: animal,
+            position: Cesium.Cartesian3.fromDegrees(-75.1641667, 39.9522222), // Example coordinates
+            point: {{
+                pixelSize: 10,
+                color: Cesium.Color.RED
+            }},
+            label: {{
+                text: animal,
+                font: '14pt monospace',
+                style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                outlineWidth: 2,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                pixelOffset: new Cesium.Cartesian2(0, -9)
+            }}
+        }});
+    </script>
+    """
+    components.html(cesium_js, height=0)

@@ -5,7 +5,7 @@ animal_names = [
 from faker import Faker
 import sqlite3
 from datetime import datetime
-from AnimalList import animal_names  # Import the list of animal names
+from Python_Code.pages.AnimalList import animal_names  # Import the list of animal names
     
 # Initialize Faker
 fake = Faker()

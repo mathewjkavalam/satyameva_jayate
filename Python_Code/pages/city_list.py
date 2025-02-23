@@ -1,6 +1,5 @@
 import streamlit as st
 from collections import defaultdict
-import sqlite3
 
 # List of cities from A-Z
 cities = [
@@ -20,16 +19,15 @@ city_images = {
     "Athens": "path_or_url_to_athens_image",
     "Tokyo": "path_or_url_to_tokyo_image",
     # Add paths or URLs for all cities
-} 
+}
 
-# Function to fetch city information from the database
-def fetch_city_info(city_name):
-    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/city_database.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT info FROM city_info WHERE name=?", (city_name,))
-    result = cursor.fetchone()
-    conn.close()
-    return result[0] if result else "Information not available."
+# Dictionary to map cities to their information
+city_info = {
+    "Amsterdam": "Short Info. Animal Sightings. Graph View",
+    "Athens": "Short Info. Animal Sightings. Graph View",
+    "Tokyo": "Short Info. Animal Sightings. Graph View",
+    # Add information for all cities
+}
 
 # Categorize cities by their starting alphabet
 city_dict = defaultdict(list)
@@ -39,7 +37,7 @@ for city in cities:
 # Streamlit app
 st.set_page_config(page_title="City List from A-Z", layout="wide")
 st.title("City List from A-Z")
-
+ 
 # Add a search bar
 search_query = st.text_input("Search for a city:")
 
@@ -100,10 +98,9 @@ with col1:
 # Display the selected city's image and information
 with col2:
     if selected_city:
-        city_info = fetch_city_info(selected_city)
         st.markdown(f"""
             <div class="info-box">
                 <img src="{city_images[selected_city]}" alt="{selected_city}">
-                <p>{city_info}</p>
+                <p>{city_info[selected_city]}</p>
             </div>
-            """, unsafe_allow_html=True) 
+            """, unsafe_allow_html=True)
