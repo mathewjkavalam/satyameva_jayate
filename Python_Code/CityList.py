@@ -11,7 +11,7 @@ cities = [
     "Madrid", "Manila", "Mexico City", "Milan", "Moscow", "Mumbai", "Nairobi", "New York", "Oslo",
     "Paris", "Prague", "Rio de Janeiro", "Rome", "San Francisco", "Santiago", "Sao Paulo", "Seoul",
     "Shanghai", "Singapore", "Stockholm", "Sydney", "Taipei", "Tehran", "Tokyo", "Toronto", "Vienna",
-    "Warsaw", "Washington D.C.", "Zurich"
+    "Warsaw", "Washington D.C.", "Zurich" 
 ]
 
 # Dictionary to map cities to their image URLs or file paths
