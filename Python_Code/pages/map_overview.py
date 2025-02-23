@@ -96,9 +96,7 @@ if city and animal:
 st.markdown(
                 """
                 <style>
-                .stApp {
-                                background-color: #002900;
-                }
+
                 .input-container {
                                 background-color: #05FFA6;
                 }

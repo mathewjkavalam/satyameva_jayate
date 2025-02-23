@@ -14,9 +14,7 @@ ui.title("Wildlife Report")
 ui.markdown(
                 """
                 <style>
-                .stApp {
-                                background-color: #002900;
-                }
+
                 .input-container {
                                 background-color: #05FFA6;
                 }
