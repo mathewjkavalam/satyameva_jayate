@@ -1,5 +1,6 @@
 from faker import Faker
 import sqlite3
+from datetime import datetime
 
 # Initialize Faker
 fake = Faker()
@@ -19,12 +20,16 @@ CREATE TABLE IF NOT EXISTS animals (
 )
 ''')
 
+# Define start and end timestamps
+datetime_start = 946684800  # Unix timestamp for 2000-01-01 00:00:00
+datetime_end = int(datetime.now().timestamp())  # Current Unix timestamp
+
 # Generate and insert fake animal names, sightings, images, and dates
-for _ in range(100):  # Adjust the range for the number of entries you want
-    animal_name = fake.unique.first_name()
+for _ in range(5000):  # Adjust the range for the number of entries you want
+    animal_name = fake.first_name()  # Allow repeated names
     location = fake.city()
     image_url = fake.image_url()  # Generate a fake image URL
-    sighting_date = fake.date_time_between_dates(datetime_start='2000-01-01 00:00:00', datetime_end='now').strftime('%Y-%m-%d %H:%M')  # Generate a random datetime between 2000 and now in 24-hour format with hour and minute
+    sighting_date = fake.date_time_between_dates(datetime_start=datetime.fromtimestamp(datetime_start), datetime_end=datetime.fromtimestamp(datetime_end)).strftime('%Y-%m-%d %H:%M')  # Generate a random datetime between 2000 and now in 24-hour format with hour and minute
     cursor.execute('INSERT INTO animals (name, location, image_url, sighting_date) VALUES (?, ?, ?, ?)', (animal_name, location, image_url, sighting_date))
 
 # Commit the transaction and close the connection
