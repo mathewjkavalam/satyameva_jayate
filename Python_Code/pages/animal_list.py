@@ -4,43 +4,22 @@ import sqlite3
 
 st.set_page_config(page_title="Animal List from A-Z", layout="wide")
 
-# List of land animals from A-Z
-animals = [
-    "Aardvark", "Alpaca", "Ant", "Anteater", "Antelope", "Ape", "Armadillo", "Donkey",
-    "Baboon", "Badger", "Bat", "Bear", "Beaver", "Bison", "Boar", "Buffalo",
-    "Camel", "Capybara", "Caribou", "Cat", "Caterpillar", "Cattle", "Chamois", "Cheetah", "Chicken",
-    "Chimpanzee", "Chinchilla", "Cobra", "Cockroach", "Coyote", "Crab",
-    "Crocodile", "Crow", "Deer", "Dog", "Dogfish", "Dolphin", "Dove",
-    "Dragonfly", "Duck", "Eagle", "Echidna", "Eel", "Eland", "Elephant", "Elk", "Emu",
-    "Falcon", "Ferret", "Finch", "Flamingo", "Fly", "Fox", "Frog", "Gaur", "Gazelle", "Gerbil", "Giraffe",
-    "Gnat", "Gnu", "Goat", "Goldfinch", "Goose", "Gorilla", "Goshawk", "Grasshopper", "Grouse", "Guanaco",
-    "Gull", "Hamster", "Hare", "Hawk", "Hedgehog", "Heron", "Herring", "Hippopotamus", "Hornet", "Horse", "Human",
-    "Hummingbird", "Hyena", "Ibex", "Ibis", "Jackal", "Jaguar", "Jay", "Jellyfish", "Kangaroo", "Kingfisher",
-    "Koala", "Kookabura", "Kouprey", "Kudu", "Lapwing", "Lark", "Lemur", "Leopard", "Lion", "Llama", "Lobster",
-    "Locust", "Loris", "Louse", "Lyrebird", "Magpie", "Mallard", "Manatee", "Mandrill", "Mantis", "Marten",
-    "Meerkat", "Mink", "Mole", "Mongoose", "Monkey", "Moose", "Mosquito", "Mouse", "Mule", "Narwhal", "Newt",
-    "Nightingale", "Octopus", "Okapi", "Opossum", "Oryx", "Ostrich", "Otter", "Owl", "Oyster", "Panther", "Parrot",
-    "Partridge", "Peafowl", "Pelican", "Penguin", "Pheasant", "Pig", "Pigeon", "Pony", "Porcupine", "Porpoise",
-    "Quail", "Quelea", "Quetzal", "Rabbit", "Raccoon", "Rail", "Ram", "Rat", "Raven", "Red deer", "Red panda",
-    "Reindeer", "Rhinoceros", "Rook", "Salamander", "Salmon", "Sand Dollar", "Sandpiper", "Sardine", "Scorpion",
-    "Seahorse", "Seal", "Shark", "Sheep", "Shrew", "Skunk", "Snail", "Snake", "Sparrow", "Spider", "Spoonbill",
-    "Squid", "Squirrel", "Starling", "Stingray", "Stinkbug", "Stork", "Swallow", "Swan", "Tapir", "Tarsier",
-    "Termite", "Tiger", "Toad", "Trout", "Turkey", "Turtle", "Viper", "Vulture", "Wallaby", "Walrus", "Wasp",
-    "Weasel", "Whale", "Wildcat", "Wolf", "Wolverine", "Wombat", "Woodcock", "Woodpecker", "Worm", "Wren",
-    "Yak", "Zebra"
-] 
+# Function to fetch animal list from the new database
+def fetch_animals_from_db():
+    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/WildlifeNew.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM animalslist")
+    animals_data = cursor.fetchall()
+    conn.close()
+    return animals_data
 
-# Dictionary to map animals to their image URLs or file paths
-animal_images = {
-    "Aardvark": "path_or_url_to_aardvark_image",
-    "Alpaca": "path_or_url_to_alpaca_image",
-    "Tiger": "22022025_1726.jpg",
-    # Add paths or URLs for all animals
-}
+# Fetch animals
+animals_data = fetch_animals_from_db()
+animals = [animal[0] for animal in animals_data]
 
-# Function to fetch animal information from the database
+# Function to fetch animal information from the new database
 def fetch_animal_info(animal_name):
-    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/animal_database.db')
+    conn = sqlite3.connect('/c:/Users/ostin/Desktop/Hackathon 25/satyameva_jayate/Python_Code/WildlifeNew.db')
     cursor = conn.cursor()
     cursor.execute("SELECT info FROM animal_info WHERE name=?", (animal_name,))
     result = cursor.fetchone()
@@ -85,16 +64,10 @@ st.markdown("""
         margin-top: 10px;
         text-align: center;
     }
-    .info-box img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 15px;
-        margin-bottom: 10px;
-    }
     </style>
     """, unsafe_allow_html=True)
 
-# Create columns for the list and the image
+# Create columns for the list and the information
 col1, col2 = st.columns([2, 1])
 
 # Display the search results or the categorized list of animals
@@ -112,13 +85,12 @@ with col1:
                     if st.button(animal):
                         selected_animal = animal
 
-# Display the selected animal's image and information
+# Display the selected animal's information
 with col2:
     if selected_animal:
         animal_info = fetch_animal_info(selected_animal)
         st.markdown(f"""
             <div class="info-box">
-                <img src="{animal_images[selected_animal]}" alt="{selected_animal}">
                 <p>{animal_info}</p>
             </div>
             """, unsafe_allow_html=True)
