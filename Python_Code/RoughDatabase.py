@@ -3,7 +3,7 @@ from typing import List, Tuple, Any, Optional
 
 class Database:
     
-    def __init__(self, db_name: str = "WildlifeDatabase.db"):
+    def __init__(self, db_name: str = "animal_database.db"):
         self.db_name = db_name
 
     def __enter__(self):
