@@ -3,6 +3,7 @@ from collections import defaultdict
 import sqlite3
 import os
 
+
 st.set_page_config(page_title="Animal List from A-Z", layout="wide")
 
 # Define the database path
