@@ -1,5 +1,5 @@
 _init:
-    $global:mjk_working_directory = "C:\RGU Hack 2025\Code\github_repo\satyameva_jayate\Python_Code\"
+    $global:mjk_working_directory = "C:\RGU Hack 2025\Code\satyameva_jayate\Python_Code\"
     cd $mjk_working_directory 
 init_venv:
     .\make.ps1 _init
