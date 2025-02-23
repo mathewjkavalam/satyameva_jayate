@@ -15,7 +15,11 @@ deactivate_venv:
     cd .venv\Scripts\
     deactivate
     cd $mjk_working_directory
-run:
+run_data_entry:
     .\make.ps1 _init
     pip freeze > requirements.txt
     streamlit run .\AnimalSightingUpload.py
+run_search:
+    .\make.ps1 _init
+    pip freeze > requirements.txt
+    streamlit run .\SearchBar.py
