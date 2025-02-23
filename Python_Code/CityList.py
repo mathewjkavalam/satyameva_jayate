@@ -20,7 +20,7 @@ city_images = {
     "Athens": "path_or_url_to_athens_image",
     "Tokyo": "path_or_url_to_tokyo_image",
     # Add paths or URLs for all cities
-}
+} 
 
 # Function to fetch city information from the database
 def fetch_city_info(city_name):
